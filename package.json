@@ -1,5 +1,5 @@
 {
-  "name": "SubscriptionCertificate",
+  "name": "subscription_cert",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
