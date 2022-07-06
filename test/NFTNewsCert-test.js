@@ -33,7 +33,7 @@ describe("NFTNewsCert contract", function () {
     it("Should output tokeURI", async function () {
       const address1=account1.address;
       await token721.mintRed("shibuya", "hello");
-      await token721.mintRed("shibuya", "nya");
+      await token721.mintRed("shibuya", "I love NFT! Love Love!");
       let tokenURI = await token721.tokenURI(2);
 
       let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
@@ -45,6 +45,39 @@ describe("NFTNewsCert contract", function () {
       console.log("image:", image);
       fs.writeFileSync("test.svg", image);
     });
+
+    it("Should Yellow is Top", async function () {
+      const address1=account1.address;
+      await token721.mintYellow("shibuya", "hello");
+      await token721.mintYellow("shibuya", "I love NFT! Love Love!");
+      let tokenURI = await token721.tokenURI(2);
+
+      let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
+      metaData = JSON.parse(metaData);
+      console.log("name:", metaData.name);
+      console.log("description:", metaData.description);
+      let image = metaData.image.split(",")[1];
+      image = Buffer.from(image, 'base64').toString('ascii');
+      console.log("image:", image);
+      fs.writeFileSync("test2.svg", image);
+    });
+
+    it("Should Blue is Top", async function () {
+      const address1=account1.address;
+      await token721.mintBlue("shibuya", "hello");
+      await token721.mintBlue("shibuya", "I love NFT! Love Love!");
+      let tokenURI = await token721.tokenURI(2);
+
+      let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
+      metaData = JSON.parse(metaData);
+      console.log("name:", metaData.name);
+      console.log("description:", metaData.description);
+      let image = metaData.image.split(",")[1];
+      image = Buffer.from(image, 'base64').toString('ascii');
+      console.log("image:", image);
+      fs.writeFileSync("test3.svg", image);
+    });
+
 
     it("Should point up with Mint", async function () {
       let point = await token721.connect(account1).getTeamScoreRed();

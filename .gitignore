@@ -8,3 +8,6 @@ typechain
 cache
 artifacts
 .vscode
+
+#test file
+*.svg

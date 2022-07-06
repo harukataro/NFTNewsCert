@@ -23,6 +23,7 @@ contract NFTNewsCert is ERC721, Ownable {
     mapping(address => Team) myTeam;
     mapping(address => uint256) myNFTs;
     mapping(address => bool) usedBonus;
+    mapping(uint256 => Team) tokenTeam;
     event Mint(address indexed minter, string indexed team,string indexed message, uint256 scoreRed, uint256 scoreYellow, uint256 scoreBlue);
     constructor(
         string memory _name,
@@ -105,7 +106,7 @@ contract NFTNewsCert is ERC721, Ownable {
         message = _message;
         teamScore[_team] += 1;
         lastTeam = _team;
-        myTeam[_to] = _team;
+        tokenTeam[newTokenId] = _team;
         myNFTs[_to] += 1;
 
         emit Mint(msg.sender, teamString[_team], message, teamScore[Team.Red], teamScore[Team.Yellow], teamScore[Team.Blue]);
@@ -120,49 +121,82 @@ contract NFTNewsCert is ERC721, Ownable {
     }
     function tokenURI(uint256 tokenId) override public view returns (string memory) {
         require(0 < tokenId && tokenId <= currentTokenId , "tokenId must be exist");        
-        string[28] memory parts;
+      
         string[4] memory metaData;
 
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 300 300"><style>.base { fill: white; font-family: serif; font-size: 14px;}</style>';
-        parts[1] = '<rect width="100%" height="100%" fill="black" />';
-        parts[27] = '<defs><linearGradient id="R"><stop offset="0%" stop-color="red"/><stop offset="100%"/></linearGradient><linearGradient id="Y"><stop offset="0%" stop-color="yellow"/><stop offset="100%"/></linearGradient><linearGradient id="B"><stop offset="0%" stop-color="blue"/><stop offset="100%"/></linearGradient></defs>';
-        parts[2] = '<text x="10" y="20" class="base">NFT News Certification #75';
-        parts[3] = '</text><text x="10" y="40" class="base"> ID: ';
-        parts[4] = Strings.toString(tokenId);
-        parts[5] = '</text><circle cx="';
-        parts[6] = Strings.toString(circleXposition(Team.Red));
-        parts[7] = '" cy="150" r="';
-        parts[8] = Strings.toString(circleSize(Team.Red));
-        parts[9] = '" fill="url(#R)" /><circle cx="';
-        parts[10] = Strings.toString(circleXposition(Team.Yellow));
-        parts[12] = '" cy="150" r="';
-        parts[13] = Strings.toString(circleSize(Team.Yellow));
-        parts[14] = '" fill="url(#Y)" /><circle cx="';
-        parts[15] = Strings.toString(circleXposition(Team.Blue));
-        parts[16] = '" cy="150" r="';
-        parts[17] = Strings.toString(circleSize(Team.Blue));
-        parts[18] = '" fill="url(#B)" /><text x="10" y="220" fill="';
-        parts[19] =  teamString[lastTeam];
-        parts[20] = '" font-family="serif" font-size="10px">';
-        parts[21] = message;
-        parts[22] = '</text><text x="10" y="240" fill="';
-        parts[23] = teamString[lastTeam];
-        parts[24] = '" font-family="serif" font-size="10px">';
-        parts[25] = Strings.toHexString(uint256(uint160(ownerOf(currentTokenId))));
-        parts[26] = '</text></svg>';
+        //flare parameter create
+        uint256 redSize = circleSize(Team.Red);
+        uint256 yellowSize = circleSize(Team.Yellow);
+        uint256 blueSize = circleSize(Team.Blue);
+        uint256 redX = circleXposition(Team.Red);
+        uint256 yellowX = circleXposition(Team.Yellow);
+        uint256 blueX = circleXposition(Team.Blue);
+        string memory redFlareColor = tokenTeam[tokenId] == Team.Red ? "fff" : "333";
+        string memory yellowFlareColor = tokenTeam[tokenId] == Team.Yellow ? "fff" : "333";
+        string memory blueFlareColor = tokenTeam[tokenId] == Team.Blue ? "fff" : "333";
+
+        string memory svg; //block to avoid Stack too deep, try removing local variables. error
+        {
+            string[29] memory p;
+            p[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 300 300"><style>.base { fill: white; font-family: serif; font-size: 14px;}</style>';
+            p[1] = '<rect width="100%" height="100%" fill="black"/><defs><filter id="f1"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter>';
+            p[2] = '<linearGradient id="R"><stop offset="0%" stop-color="red"/><stop offset="100%"/></linearGradient><linearGradient id="Y"><stop offset="0%" stop-color="yellow"/><stop offset="100%"/></linearGradient><linearGradient id="B"><stop offset="0%" stop-color="blue"/><stop offset="100%"/></linearGradient></defs>';
+            p[3] = '<text x="10" y="20" class="base">NFT News Certification #75</text><text x="10" y="40" class="base"> ID: ';
+            p[4] = Strings.toString(tokenId);
+            p[5] = '</text>';
+
+            p[6] = string(abi.encodePacked('<circle cx="',
+                            Strings.toString(redX),
+                            '" cy="150" r="',
+                            Strings.toString(redSize + 1),
+                            '" fill="#', redFlareColor,
+                            '" filter="url(#f1)"/><circle cx="'));   
+            p[7] = Strings.toString(circleXposition(Team.Red));
+            p[8] = '" cy="150" r="';
+            p[9] = Strings.toString(redSize);
+            p[10] = '" fill="url(#R)"/>';
+
+            p[11] = string(abi.encodePacked('<circle cx="',
+                            Strings.toString(yellowX),
+                            '" cy="150" r="',
+                            Strings.toString(yellowSize + 1),
+                            '" fill="#', yellowFlareColor,
+                            '" filter="url(#f1)"/><circle cx="'));
+            p[12] = Strings.toString(circleXposition(Team.Yellow));
+            p[13] = '" cy="150" r="';
+            p[14] = Strings.toString(yellowSize);
+            p[15] = '" fill="url(#Y)"/>';
+
+            p[16] = string(abi.encodePacked('<circle cx="',
+                            Strings.toString(blueX),
+                            '" cy="150" r="',
+                            Strings.toString(blueSize + 1),
+                            '" fill="#', blueFlareColor,
+                            '" filter="url(#f1)"/><circle cx="'));
+            p[17] = Strings.toString(blueX);
+            p[18] = '" cy="150" r="';
+            p[19] = Strings.toString(blueSize);
+            p[20] = '" fill="url(#B)"/><text x="10" y="220" fill="';
+
+            p[21] =  teamString[lastTeam];
+            p[22] = '" font-family="serif" font-size="10px">';
+            p[23] = message;
+            p[24] = '</text><text x="10" y="240" fill="';
+            p[25] = teamString[lastTeam];
+            p[26] = '" font-family="serif" font-size="10px">';
+            p[27] = Strings.toHexString(uint256(uint160(ownerOf(currentTokenId))));
+            p[28] = '</text></svg>';
+            svg = string(abi.encodePacked(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9]));
+            svg = string(abi.encodePacked(svg, p[10], p[11], p[12], p[13], p[14], p[15], p[16], p[17], p[18], p[19])); 
+            svg = string(abi.encodePacked(svg, p[20], p[21], p[22], p[23], p[24], p[25], p[26], p[27], p[28]));     
+        }
 
         metaData[0] = '{"name": "NFTNewsCert #';
         metaData[1] = Strings.toString(tokenId);
         metaData[2] = '", "description": "NFT News Reading Certification.",';
         metaData[3] = '"image": "data:image/svg+xml;base64,';
-        
-        string memory svg = string(abi.encodePacked(parts[0], parts[1],parts[27], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9]));
-        svg = string(abi.encodePacked(svg,  parts[10], parts[12], parts[13], parts[14], parts[15], parts[16], parts[17], parts[18], parts[19])); 
-        svg = string(abi.encodePacked(svg, parts[20], parts[21], parts[22], parts[23], parts[24], parts[25], parts[26])); 
-        
         string memory json = Base64.encode(bytes(string(abi.encodePacked(metaData[0], metaData[1], metaData[2], metaData[3], Base64.encode(bytes(svg)), '"}'))));
         string memory output = string(abi.encodePacked('data:application/json;base64,', json));
-
         return output;
     }
     function mintSwitch(bool _sw) onlyOwner() public {
