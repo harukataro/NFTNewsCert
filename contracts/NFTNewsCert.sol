@@ -67,6 +67,7 @@ contract NFTNewsCert is ERC721, Ownable{
     }
     function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
+        require(sw, "Minting window is not open");
         require(currentTokenId < totalNumer, "Token amount is full)");
         require(numOfMinted[_to] < limit, "You reached mint limit");
         uint256 newTokenId = _getNextTokenId();
@@ -135,7 +136,7 @@ contract NFTNewsCert is ERC721, Ownable{
             '{"name": "NFTNewsCertfication #',
             Strings.toString(_tokenId),
             '","description": "NFT News Reading Certification.",',
-            '"attributes": [{"trait_type":"color","display_type":"Color","value":"',
+            '"attributes": [{"trait_type":"Color","value":"',
             colorString[tokenColor[_tokenId]],
             '"}],',
             '"image": "data:image/svg+xml;base64,'
