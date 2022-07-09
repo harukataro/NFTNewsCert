@@ -13,11 +13,12 @@ describe("NFTNewsCert contract", function () {
   [owner, a1, a2, a3, a4, a5, ...otherAccounts] = await ethers.getSigners();
 
   token721 = await BadgeToken.deploy(_name,_symbol);
+  await token721.mintSwitch(true);
   });
 
   // You can nest describe calls to create subsections.
   describe("Deployment", function () {
-
+    
     it("Should has the correct name and symbol ", async function () {
       expect(await token721.name()).to.equal(_name);
       expect(await token721.symbol()).to.equal(_symbol);
@@ -37,43 +38,46 @@ describe("NFTNewsCert contract", function () {
       await token721.connect(a4).mintWhite("harajyuku");
       await token721.connect(a5).mintGreen("harajyuku");
       let tokenURI = await token721.tokenURI(2);
-      //console.log("tokenURI",tokenURI);
       let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
-      console.log(metaData);
+      //console.log(metaData);
       metaData = JSON.parse(metaData);
       console.log("name:", metaData.name);
       console.log("description:", metaData.description);
       console.log('attributes:', metaData.attributes);
       let image = metaData.image.split(",")[1];
       image = Buffer.from(image, 'base64').toString('ascii');
-      console.log("image:", image);
+      //console.log("image:", image);
       fs.writeFileSync("test.svg", image);
     });
 
     it("max mint", async function () {
       await token721.setLimit(100);
-      for(let i=0; i<16; i++){
+      for(let i=0; i<20; i++){
         await token721.connect(a1).mintBlue("harajyuku");
         await token721.connect(a2).mintYellow("harajyuku");
         await token721.connect(a3).mintPink("harajyuku");
         await token721.connect(a4).mintWhite("harajyuku");
         await token721.connect(a5).mintGreen("harajyuku");
-        await token721.mintRed("taro");
       }
 
       let tokenURI = await token721.tokenURI(50);
-      //console.log("tokenURI",tokenURI);
       let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
-      console.log(metaData);
+      //console.log(metaData);
       metaData = JSON.parse(metaData);
       console.log("name:", metaData.name);
       console.log("description:", metaData.description);
       console.log('attributes:', metaData.attributes);
       let image = metaData.image.split(",")[1];
       image = Buffer.from(image, 'base64').toString('ascii');
-      console.log("image:", image);
+      //console.log("image:", image);
       fs.writeFileSync("test2.svg", image);
     });
 
+    it("Mint can not with switch off state", async function () {
+      await token721.mintSwitch(false);
+      await expect(
+        token721.connect(a1).mintBlue("harajyuku")
+        ).to.be.revertedWith("Minting window is not open");
+    });
   });
 });
