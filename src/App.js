@@ -171,7 +171,7 @@ const App = () => {
       Mint Now
       </button>
       <p className="explain-text">
-        あなたのオリジナルな購読証明を発行しよう。色と証明書に記載したい名前を入力してMintボタンを押すのです。<p/>NFTフルオンチェーンで作成されています。ETHEREUMと共に永遠にあなたのウオレットに生き続けます。
+        あなたのオリジナルな購読証明を発行しよう<p/>色とサイン名を入力しMint<p/>フルオンチェーンNFTはETHEREUMと共に永遠にあなたと共に
         </p>
     </div>
 
@@ -202,7 +202,7 @@ const App = () => {
         <div className="header-container">
           <p className="header gradient-text">NFT News Reading Certification</p>
           <p className="sub-text">
-            Get certification on Web3!
+            Get Reading Certification on Web3!
           </p>
           {/* <p className="sub-text">
             {mintTotal}/100 NFTs minted.
@@ -214,7 +214,7 @@ const App = () => {
             target="_blank"
             rel="noreferrer"
           >
-            <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View Collection on OpenSea</a>
+            <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View on OpenSea</a>
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
@@ -223,7 +223,7 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built by haruxx`}</a>
+          >{'haruxx'}</a>
           <div className="circleL1"></div>
           <div className="circleL2"></div>
           <div className="circleL3"></div>

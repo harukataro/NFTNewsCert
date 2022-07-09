@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/NFTNewsCert/static/css/main.a85c16b5.css",
-    "main.js": "/NFTNewsCert/static/js/main.22368774.js",
+    "main.css": "/NFTNewsCert/static/css/main.afbbfdfd.css",
+    "main.js": "/NFTNewsCert/static/js/main.bb51ab78.js",
     "static/js/787.fd583a91.chunk.js": "/NFTNewsCert/static/js/787.fd583a91.chunk.js",
     "static/media/svgviewer-output.svg": "/NFTNewsCert/static/media/svgviewer-output.fa2f9ae25272a009f4d1ee0e0fcbf75c.svg",
     "index.html": "/NFTNewsCert/index.html",
-    "main.a85c16b5.css.map": "/NFTNewsCert/static/css/main.a85c16b5.css.map",
-    "main.22368774.js.map": "/NFTNewsCert/static/js/main.22368774.js.map",
+    "main.afbbfdfd.css.map": "/NFTNewsCert/static/css/main.afbbfdfd.css.map",
+    "main.bb51ab78.js.map": "/NFTNewsCert/static/js/main.bb51ab78.js.map",
     "787.fd583a91.chunk.js.map": "/NFTNewsCert/static/js/787.fd583a91.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a85c16b5.css",
-    "static/js/main.22368774.js"
+    "static/css/main.afbbfdfd.css",
+    "static/js/main.bb51ab78.js"
   ]
 }

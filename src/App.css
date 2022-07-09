@@ -8,7 +8,6 @@
 .container {
   height: 100vh;
   width: 100vw;
-  /* background-color: #0d1116; */
   background: linear-gradient(to left top, #0c47eb, #1c1c1b);
   display: flex;
   align-items: center;
@@ -19,7 +18,7 @@
 .header-container {
   padding-top: 30px;
   background: white;
-  min-height: 70vh;
+  min-height: 80vh;
   width: 60%;
   background: linear-gradient( to right bottom, rgba(0, 4, 231, 0.6), rgba(255, 255, 255, 0.2));
   border-radius: 2rem;
@@ -147,7 +146,7 @@
 
 .header {
   margin: 0 0 15px 0;
-  font-size: 50px;
+  font-size: 30px;
   font-weight: bold;
 }
 
@@ -167,8 +166,8 @@
 }
 
 .select-box{
-  margin: 5px 15px 5px 15px;
-  width: 100px;
+  margin: 0px 0px 0px 0px;
+  width: 220px;
   height: 40px;
   border-radius: 5px;
   border: 1px solid #000000;
@@ -180,12 +179,12 @@
 }
 
 .text-box{
-  margin: 5px 15px 5px 15px;
+  margin: 0px 0px 0px 0px;
   width: 200px;
   height: 30px;
   border-radius: 5px;
   border: 1px solid #000000;
-  padding: 5px;
+  padding: 5px 10px;
   font-size: 18px;
   font-weight: bold;
   color: #000000;
@@ -199,25 +198,15 @@
   -webkit-text-fill-color: transparent;
 }
 
-.wrapper{
-  margin: 100px 105px 15px 5px 15px;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  align-items: center;
-}
-
 .cta-button {
   height: 45px;
   border: 0;
-  width: auto;
+  width: 220px;
   padding-left: 40px;
   padding-right: 40px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   color: white;
 }
