@@ -3,6 +3,7 @@ node_modules
 coverage
 coverage.json
 typechain
+nfts-react
 
 #Hardhat files
 cache
