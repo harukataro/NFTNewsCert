@@ -33,7 +33,8 @@ describe("NFTNewsCert contract", function () {
     it("Should output tokeURI", async function () {
       const address1=account1.address;
       await token721.mintRed("shibuya");
-      let tokenURI = await token721.tokenURI(1);
+      await token721.connect(account1).mintBlue("harajyuku");
+      let tokenURI = await token721.tokenURI(2);
       console.log("tokenURI",tokenURI);
       let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
       metaData = JSON.parse(metaData);
@@ -44,7 +45,5 @@ describe("NFTNewsCert contract", function () {
       console.log("image:", image);
       fs.writeFileSync("test.svg", image);
     });
-
-
   });
 });

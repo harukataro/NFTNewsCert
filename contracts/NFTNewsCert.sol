@@ -43,7 +43,7 @@ contract NFTNewsCert is ERC721, Ownable {
     function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
         require(currentTokenId < totalNumer, "Token amount is full)");
-        require(numOfMinted[_to] < limit, "You reached mint limite");
+        require(numOfMinted[_to] < limit, "You reached mint limit");
         uint256 newTokenId = _getNextTokenId();
         _mint(_to, newTokenId);
         
@@ -83,19 +83,15 @@ contract NFTNewsCert is ERC721, Ownable {
                 '"/>'
             ));
             
-            for(uint256 i = 0; i < 100; i++){
+            for(uint256 i = 1; i <= 100; i++){
                 string memory head;
-                if(tokenColor[_tokenId] == Color.Black){continue;}
-                if(tokenColor[_tokenId] == Color.Red){head = '<use href="#R" x="';}
-                else if(tokenColor[_tokenId] == Color.Blue){head = '<use href="#B" x="';}
+                if(tokenColor[i] == Color.Black){continue;}
+                if(tokenColor[i] == Color.Red){head = '<use href="#R" x="';}
+                else if(tokenColor[i] == Color.Blue){head = '<use href="#B" x="';}
 
-                p[5] = string(abi.encodePacked(
-                    head,
-                    Strings.toString((i % 10) * 22 + 40),
-                    '" y="',
-                    Strings.toString((i / 10) * 22 + 95),
-                    '"/>'
-                ));
+                string memory x = Strings.toString(((i-1) % 10) * 22 + 40);
+                string memory y = Strings.toString(((i-1) / 10) * 22 + 95);
+                p[5] = string(abi.encodePacked(p[5], head, x, '" y="', y, '"/>'));
             }
             p[6] = '<text x="30" y="20" class="base">NFT News Certification #75</text><text x="30" y="40" class="base"> ID: ';
             p[7] = Strings.toString(_tokenId);
@@ -108,7 +104,7 @@ contract NFTNewsCert is ERC721, Ownable {
 
         metaData[0] = '{"name": "NFTNewsCert #';
         metaData[1] = Strings.toString(_tokenId);
-        metaData[2] = '", "description": "NFT News Reading Certification.",';
+        metaData[2] = '","description": "NFT News Reading Certification.",';
         metaData[3] = '"image": "data:image/svg+xml;base64,';
         string memory json = Base64.encode(bytes(string(abi.encodePacked(metaData[0], metaData[1], metaData[2], metaData[3], Base64.encode(bytes(svg)), '"}'))));
         string memory output = string(abi.encodePacked('data:application/json;base64,', json));
