@@ -35,16 +35,20 @@ contract NFTNewsCert is ERC721, Ownable{
     }
 
     //Utility
-    function xPosition(uint256 _tokenId) public pure returns (uint256){
+    function xPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) % 10 * 24 + 12 + 30 + 10;
     }
-        function yPosition(uint256 _tokenId) public pure returns (uint256){
+        function yPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) / 10 * 24 + 12 + 60 + 10;
     }
 
 
-    function getNumberOfMinted(address _address) public view returns (uint256) {
+    function getUserMinted(address _address) public view returns (uint256) {
         return numOfMinted[_address];
+    }
+
+    function getMinttedNftNumber() public view returns (uint256) {
+        return currentTokenId ;
     }
 
     function mintRed( string memory yourName) public{
@@ -85,7 +89,7 @@ contract NFTNewsCert is ERC721, Ownable{
     function _incrementTokenId() private {
         currentTokenId++;
     }
-        function isTokenExist(uint256 _tokenId) public view returns (bool) {
+        function isTokenExist(uint256 _tokenId) private view returns (bool) {
         if(_tokenId < 1 || currentTokenId < _tokenId){return false;}
         return tokenColor[_tokenId] != Color.Black;
     }
@@ -145,7 +149,7 @@ contract NFTNewsCert is ERC721, Ownable{
         string memory output = string(abi.encodePacked('data:application/json;base64,', json));
         return output;
     }
-    function mintSwitch(bool _sw) onlyOwner() public {
+    function setSwitch(bool _sw) onlyOwner() public {
         sw = _sw;
     }
 

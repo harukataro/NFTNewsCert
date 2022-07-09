@@ -13,7 +13,7 @@ describe("NFTNewsCert contract", function () {
   [owner, a1, a2, a3, a4, a5, ...otherAccounts] = await ethers.getSigners();
 
   token721 = await BadgeToken.deploy(_name,_symbol);
-  await token721.mintSwitch(true);
+  await token721.setSwitch(true);
   });
 
   // You can nest describe calls to create subsections.
@@ -74,7 +74,7 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("Mint can not with switch off state", async function () {
-      await token721.mintSwitch(false);
+      await token721.setSwitch(false);
       await expect(
         token721.connect(a1).mintBlue("harajyuku")
         ).to.be.revertedWith("Minting window is not open");
