@@ -107,7 +107,7 @@ contract NFTNewsCert is ERC721, Ownable{
             ));
         }
 
-        p[2] = '</defs><rect width="100%" height="100%" fill="#222" rx="15" ry="15"/><rect x="2", y="2" width="318" height="318" rx="15" ry="15"/>';
+        p[2] = '</defs><rect width="100%" height="100%" fill="#222" rx="15" ry="15"/>';
         
         string memory xo = Strings.toString(xPosition(_tokenId));
         string memory yo = Strings.toString((yPosition(_tokenId)));
