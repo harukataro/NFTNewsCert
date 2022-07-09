@@ -33,6 +33,16 @@ contract NFTNewsCert is ERC721, Ownable{
             colorString[Color(i)] = colorArray[i];
         }
     }
+
+    //Utility
+    function xPosition(uint256 _tokenId) public pure returns (uint256){
+        return (_tokenId- 1) % 10 * 24 + 12 + 30 + 10;
+    }
+        function yPosition(uint256 _tokenId) public pure returns (uint256){
+        return (_tokenId- 1) / 10 * 24 + 12 + 60 + 10;
+    }
+
+
     function getNumberOfMinted(address _address) public view returns (uint256) {
         return numOfMinted[_address];
     }
@@ -81,13 +91,11 @@ contract NFTNewsCert is ERC721, Ownable{
     function tokenURI(uint256 _tokenId) override public view returns (string memory) {
         require(isTokenExist(_tokenId), "tokenId must be exist");
         
-
         string[6] memory p;
         p[0] = string(abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 320 320">',
             '<style>.base { fill: white; font-family: serif; font-size: 14px;}</style>',
-            '<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter>',
-            '<circle id="F" cx="0" cy="0" r="15" fill="#aaa" filter="url(#f)"/>'
+            '<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter>'
         ));
 
         for(uint256 i = 0; i< colorArray.length; i++){
@@ -99,25 +107,25 @@ contract NFTNewsCert is ERC721, Ownable{
             ));
         }
 
-        p[2] = '</defs><rect width="100%" height="100%" fill="#222" rx="15" ry="15"/>';
+        p[2] = '</defs><rect width="100%" height="100%" fill="#222" rx="15" ry="15"/><rect x="2", y="2" width="318" height="318" rx="15" ry="15"/>';
         
-        string memory xo = Strings.toString(((_tokenId- 1) % 10) * 26 + 13 + 30);
-        string memory yo = Strings.toString(((_tokenId- 1) / 10) * 26 + 100);
-        p[3] = string(abi.encodePacked('<use href="#F" x="', xo,'" y="',yo,'"/>'));
+        string memory xo = Strings.toString(xPosition(_tokenId));
+        string memory yo = Strings.toString((yPosition(_tokenId)));
+        p[3] = string(abi.encodePacked('<circle id="F" cx="', xo, '" cy="', yo, '" r="20" fill="#aaa" filter="url(#f)"/>'));
 
         for(uint256 i = 1; i <= 100; i++){
             if(tokenColor[i] == Color.Black){continue;}
             string memory ref = colorString[tokenColor[i]];
-            string memory x = Strings.toString(((i-1) % 10) * 26 + 13 + 30);
-            string memory y = Strings.toString(((i-1) / 10) * 26 + 100);
+            string memory x = Strings.toString(xPosition(i));
+            string memory y = Strings.toString(yPosition(i));
             p[4] = string(abi.encodePacked(p[4],'<use href="#',ref,'" x="',x,'" y="', y,'"/>'));
         }
 
         p[5] = string(abi.encodePacked(
-            '<text x="30" y="30" class="base">NFT News Certification #75</text>',
-            '<text x="30" y="50" class="base">ID: ',
+            '<text x="30" y="25" class="base">NFT News Certification #75</text>',
+            '<text x="30" y="45" class="base">ID: ',
             Strings.toString(_tokenId),
-            '</text><text x="30" y="70" class="base"> Minter: ',
+            '</text><text x="30" y="65" class="base"> Minter: ',
             tokenSignature[_tokenId],
             '</text></svg>'
         ));
