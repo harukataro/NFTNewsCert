@@ -55,7 +55,7 @@ const App = () => {
       }
 
       const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-
+      
       console.log("Connected", accounts[0])
       setCurrentAccount(accounts[0])
 
@@ -170,11 +170,7 @@ const App = () => {
       <button onClick={askContractToMintNft} className="cta-button mint-button">
       Mint Now
       </button>
-      <p className="explain-text">
-        あなたのオリジナルな購読証明を発行しよう<p/>色とサイン名を入力しMint<p/>フルオンチェーンNFTはETHEREUMと共に永遠にあなたと共に
-        </p>
     </div>
-
   )
 
   const renderNetworkPrompt = () => (
@@ -208,6 +204,9 @@ const App = () => {
             {mintTotal}/100 NFTs minted.
           </p> */}
           {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
+          <p className="explain-text">
+            あなたのオリジナルな購読証明を発行しよう<p/>色とサイン名を入力しMint<p/>フルオンチェーンNFT with YOU!
+          </p>
           <a
             className="opensea-button"
             href={OPENSEA_LINK}
@@ -224,6 +223,11 @@ const App = () => {
             target="_blank"
             rel="noreferrer"
           >{'haruxx'}</a>
+          {/* {currentAccount !== "" ?
+            (<text className='footer-text' onClick={DisconnectWallet}>disconnect wallet</text>)
+            :
+            ("...")
+          } */}
           <div className="circleL1"></div>
           <div className="circleL2"></div>
           <div className="circleL3"></div>
