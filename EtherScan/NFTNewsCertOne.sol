@@ -1177,6 +1177,7 @@ contract NFTNewsCert is ERC721, Ownable{
     }
     function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
+        require(sw, "Minting window is not open");
         require(currentTokenId < totalNumer, "Token amount is full)");
         require(numOfMinted[_to] < limit, "You reached mint limit");
         uint256 newTokenId = _getNextTokenId();
