@@ -87,7 +87,7 @@ contract NFTNewsCert is ERC721, Ownable{
             '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 320 320">',
             '<style>.base { fill: white; font-family: serif; font-size: 14px;}</style>',
             '<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter>',
-            '<circle id="F" cx="0" cy="0" r="10" fill="#aaa" filter="url(#f)"/>'
+            '<circle id="F" cx="0" cy="0" r="15" fill="#aaa" filter="url(#f)"/>'
         ));
 
         for(uint256 i = 0; i< colorArray.length; i++){
@@ -95,21 +95,21 @@ contract NFTNewsCert is ERC721, Ownable{
             p[1] = string(abi.encodePacked(
                 p[1],
                 '<linearGradient id="', color, 'LG"><stop offset="0%" stop-color="',color,'"/><stop offset="100%"/>',
-                '</linearGradient><circle id="',color, '" cx="0" cy="0" r="8" fill="url(#', color, 'LG)"/>'
+                '</linearGradient><circle id="',color, '" cx="0" cy="0" r="10" fill="url(#', color, 'LG)"/>'
             ));
         }
 
-        p[2] = '</defs><rect width="100%" height="100%" fill="#222"/>';
+        p[2] = '</defs><rect width="100%" height="100%" fill="#222" rx="15" ry="15"/>';
         
-        string memory xo = Strings.toString(((_tokenId- 1) % 10) * 22 + 40);
-        string memory yo = Strings.toString(((_tokenId- 1) / 10) * 22 + 95);
+        string memory xo = Strings.toString(((_tokenId- 1) % 10) * 26 + 13 + 30);
+        string memory yo = Strings.toString(((_tokenId- 1) / 10) * 26 + 100);
         p[3] = string(abi.encodePacked('<use href="#F" x="', xo,'" y="',yo,'"/>'));
 
         for(uint256 i = 1; i <= 100; i++){
             if(tokenColor[i] == Color.Black){continue;}
             string memory ref = colorString[tokenColor[i]];
-            string memory x = Strings.toString(((i-1) % 10) * 22 + 40);
-            string memory y = Strings.toString(((i-1) / 10) * 22 + 95);
+            string memory x = Strings.toString(((i-1) % 10) * 26 + 13 + 30);
+            string memory y = Strings.toString(((i-1) / 10) * 26 + 100);
             p[4] = string(abi.encodePacked(p[4],'<use href="#',ref,'" x="',x,'" y="', y,'"/>'));
         }
 

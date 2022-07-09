@@ -52,7 +52,7 @@ describe("NFTNewsCert contract", function () {
 
     it("max mint", async function () {
       await token721.setLimit(100);
-      for(let i=0; i<10; i++){
+      for(let i=0; i<16; i++){
         await token721.connect(a1).mintBlue("harajyuku");
         await token721.connect(a2).mintYellow("harajyuku");
         await token721.connect(a3).mintPink("harajyuku");
