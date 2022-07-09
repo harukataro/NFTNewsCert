@@ -2,18 +2,20 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
 import "hardhat/console.sol";
 
-contract NFTNewsCert is ERC721, Ownable {
+contract NFTNewsCert is ERC721, Ownable{
     uint256 private currentTokenId = 0;
     bool sw = false;
     uint256 totalNumer = 100;
     uint256 limit = 1;
 
-    enum Color {Black, Red, Blue}
+    enum Color {Black, Red, Blue, Green, Yellow, White, Pink}
+    string[] colorArray;
     mapping(Color => string) colorString;
 
     mapping(uint256 => Color) tokenColor;
@@ -26,9 +28,10 @@ contract NFTNewsCert is ERC721, Ownable {
         string memory _name,
         string memory _symbol
     ) ERC721(_name, _symbol) {
-        colorString[Color.Black] = "black";
-        colorString[Color.Red] = "red";
-        colorString[Color.Blue] = "blue";
+        colorArray = ["black","red", "blue", "green", "yellow", "white", "pink"];
+        for(uint256 i=0; i<colorArray.length; i++){
+            colorString[Color(i)] = colorArray[i];
+        }
     }
     function getNumberOfMinted(address _address) public view returns (uint256) {
         return numOfMinted[_address];
@@ -39,6 +42,18 @@ contract NFTNewsCert is ERC721, Ownable {
     }
     function mintBlue(string memory yourName) public{
         mintTo(Color.Blue, yourName);
+    }
+    function mintGreen(string memory yourName) public{
+        mintTo(Color.Green, yourName);
+    }
+    function mintYellow(string memory yourName) public{
+        mintTo(Color.Yellow, yourName);
+    }
+    function mintWhite(string memory yourName) public{
+        mintTo(Color.White, yourName);
+    }
+    function mintPink(string memory yourName) public{
+        mintTo(Color.Pink, yourName);
     }
     function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
@@ -65,48 +80,59 @@ contract NFTNewsCert is ERC721, Ownable {
     }
     function tokenURI(uint256 _tokenId) override public view returns (string memory) {
         require(isTokenExist(_tokenId), "tokenId must be exist");
-        string[4] memory metaData;
+        
 
-        string memory svg; //block to avoid "Stack too deep error"
-        {
-            string[17] memory p;
-            p[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 320 320"><style>.base { fill: white; font-family: serif; font-size: 14px;}</style>';
-            p[1] = '<rect width="100%" height="100%" fill="black"/>';
-            p[2] = '<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter><linearGradient id="r"><stop offset="0%" stop-color="red"/><stop offset="100%"/></linearGradient><linearGradient id="b"><stop offset="0%" stop-color="blue"/><stop offset="100%"/></linearGradient>';
-            p[3] = '<circle id="F" cx="0" cy="0" r="10" fill="#aaa" filter="url(#f)"/><circle id="R" cx="0" cy="0" r="9" fill="url(#r)"/><circle id="B" cx="0" cy="0" r="9" fill="url(#b)"/> </defs>';
-            
-            p[4] = string(abi.encodePacked(
-                '<use href="#F" x="', 
-                Strings.toString(((_tokenId- 1) % 10) * 22 + 40),
-                '" y="',
-                Strings.toString(((_tokenId- 1) / 10) * 22 + 95),
-                '"/>'
+        string[6] memory p;
+        p[0] = string(abi.encodePacked(
+            '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 320 320">',
+            '<style>.base { fill: white; font-family: serif; font-size: 14px;}</style>',
+            '<defs><filter id="f"><feGaussianBlur in="SourceGraphic" stdDeviation="3" /></filter>',
+            '<circle id="F" cx="0" cy="0" r="10" fill="#aaa" filter="url(#f)"/>'
+        ));
+
+        for(uint256 i = 0; i< colorArray.length; i++){
+            string memory color = colorArray[i];
+            p[1] = string(abi.encodePacked(
+                p[1],
+                '<linearGradient id="', color, 'LG"><stop offset="0%" stop-color="',color,'"/><stop offset="100%"/>',
+                '</linearGradient><circle id="',color, '" cx="0" cy="0" r="8" fill="url(#', color, 'LG)"/>'
             ));
-            
-            for(uint256 i = 1; i <= 100; i++){
-                string memory head;
-                if(tokenColor[i] == Color.Black){continue;}
-                if(tokenColor[i] == Color.Red){head = '<use href="#R" x="';}
-                else if(tokenColor[i] == Color.Blue){head = '<use href="#B" x="';}
-
-                string memory x = Strings.toString(((i-1) % 10) * 22 + 40);
-                string memory y = Strings.toString(((i-1) / 10) * 22 + 95);
-                p[5] = string(abi.encodePacked(p[5], head, x, '" y="', y, '"/>'));
-            }
-            p[6] = '<text x="30" y="20" class="base">NFT News Certification #75</text><text x="30" y="40" class="base"> ID: ';
-            p[7] = Strings.toString(_tokenId);
-            p[8] = '</text><text x="30" y="60" class="base"> for  ';
-            p[9] = tokenSignature[_tokenId];
-            p[10] = '</text>';
-            p[11] = '</svg>';
-            svg = string(abi.encodePacked(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11]));
         }
 
-        metaData[0] = '{"name": "NFTNewsCert #';
-        metaData[1] = Strings.toString(_tokenId);
-        metaData[2] = '","description": "NFT News Reading Certification.",';
-        metaData[3] = '"image": "data:image/svg+xml;base64,';
-        string memory json = Base64.encode(bytes(string(abi.encodePacked(metaData[0], metaData[1], metaData[2], metaData[3], Base64.encode(bytes(svg)), '"}'))));
+        p[2] = '</defs><rect width="100%" height="100%" fill="#222"/>';
+        
+        string memory xo = Strings.toString(((_tokenId- 1) % 10) * 22 + 40);
+        string memory yo = Strings.toString(((_tokenId- 1) / 10) * 22 + 95);
+        p[3] = string(abi.encodePacked('<use href="#F" x="', xo,'" y="',yo,'"/>'));
+
+        for(uint256 i = 1; i <= 100; i++){
+            if(tokenColor[i] == Color.Black){continue;}
+            string memory ref = colorString[tokenColor[i]];
+            string memory x = Strings.toString(((i-1) % 10) * 22 + 40);
+            string memory y = Strings.toString(((i-1) / 10) * 22 + 95);
+            p[4] = string(abi.encodePacked(p[4],'<use href="#',ref,'" x="',x,'" y="', y,'"/>'));
+        }
+
+        p[5] = string(abi.encodePacked(
+            '<text x="30" y="30" class="base">NFT News Certification #75</text>',
+            '<text x="30" y="50" class="base">ID: ',
+            Strings.toString(_tokenId),
+            '</text><text x="30" y="70" class="base"> Minter: ',
+            tokenSignature[_tokenId],
+            '</text></svg>'
+        ));
+        string memory svg = string(abi.encodePacked(p[0], p[1], p[2], p[3], p[4], p[5]));
+        
+        string memory meta = string(abi.encodePacked(
+            '{"name": "NFTNewsCertfication #',
+            Strings.toString(_tokenId),
+            '","description": "NFT News Reading Certification.",',
+            '"attributes": [{"trait_type":"color","display_type":"Color","value":"',
+            colorString[tokenColor[_tokenId]],
+            '"}],',
+            '"image": "data:image/svg+xml;base64,'
+        ));
+        string memory json = Base64.encode(bytes(string(abi.encodePacked(meta, Base64.encode(bytes(svg)), '"}'))));
         string memory output = string(abi.encodePacked('data:application/json;base64,', json));
         return output;
     }
