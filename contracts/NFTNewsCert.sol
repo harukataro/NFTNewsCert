@@ -13,6 +13,7 @@ contract NFTNewsCert is ERC721, Ownable{
     bool sw = false;
     uint256 totalNumer = 100;
     uint256 limit = 1;
+    uint256 mintPrice = 0.005 ether;
 
     enum Color {Black, Red, Blue, Green, Yellow, White, Pink}
     string[] colorArray;
@@ -33,66 +34,12 @@ contract NFTNewsCert is ERC721, Ownable{
         }
     }
 
-    //Utility
+    // internal functions
     function xPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) % 10 * 24 + 12 + 30 + 10;
     }
     function yPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) / 10 * 24 + 12 + 60 + 10;
-    }
-
-    function getNumberOfAccountMinted(address _address) public view returns (uint256) {
-        return numOfMinted[_address];
-    }
-
-    function getNumberOfMinted() public view returns (uint256) {
-        return currentTokenId ;
-    }
-
-    function getMintStatus() public view returns (bool) {
-        return sw;
-    }
-
-    function getSignature(uint256 _tokenId) public view returns (string memory) {
-        return tokenSignature[_tokenId];
-    }
-
-    function setSignature(uint256 _tokenId, string memory _signature) public {
-        require(ownerOf(_tokenId) == msg.sender, "Only owner can set signature");
-        tokenSignature[_tokenId] = _signature;
-    }
-
-    function mintRed( string memory yourName) public{
-        mintTo( Color.Red, yourName);
-    }
-    function mintBlue(string memory yourName) public{
-        mintTo(Color.Blue, yourName);
-    }
-    function mintGreen(string memory yourName) public{
-        mintTo(Color.Green, yourName);
-    }
-    function mintYellow(string memory yourName) public{
-        mintTo(Color.Yellow, yourName);
-    }
-    function mintWhite(string memory yourName) public{
-        mintTo(Color.White, yourName);
-    }
-    function mintPink(string memory yourName) public{
-        mintTo(Color.Pink, yourName);
-    }
-    function mintTo(Color _color,string memory _name) private{
-        address _to = msg.sender;
-        require(sw, "Minting window is not open");
-        require(currentTokenId < totalNumer, "Token amount is full)");
-        require(numOfMinted[_to] < limit, "You reached mint limit");
-        uint256 newTokenId = _getNextTokenId();
-        _mint(_to, newTokenId);
-        
-        tokenSignature[newTokenId] = _name;
-        tokenColor[newTokenId] = _color;
-        numOfMinted[_to]++;
-        emit Mint(msg.sender, colorString[_color], _name);
-        _incrementTokenId();
     }
     function _getNextTokenId() private view returns (uint256) {
         return currentTokenId+1;
@@ -103,6 +50,73 @@ contract NFTNewsCert is ERC721, Ownable{
         function isTokenExist(uint256 _tokenId) private view returns (bool) {
         if(_tokenId < 1 || currentTokenId < _tokenId){return false;}
         return tokenColor[_tokenId] != Color.Black;
+    }
+
+    // external functions
+    function getNumberOfAccountMinted(address _address) public view returns (uint256) {
+        return numOfMinted[_address];
+    }
+    function getNumberOfMinted() public view returns (uint256) {
+        return currentTokenId ;
+    }
+    function getMintStatus() public view returns (bool) {
+        return sw;
+    }
+    function setMintStatus(bool _sw) onlyOwner public {
+        sw = _sw;
+    }
+    function getLimit() public view returns (uint256) {
+        return limit;
+    }
+    function setLimit(uint256 _limit) onlyOwner public {
+        limit = _limit;
+    }
+    function getSignature(uint256 _tokenId) public view returns (string memory) {
+        return tokenSignature[_tokenId];
+    }
+    function setSignature(uint256 _tokenId, string memory _signature) public {
+        require(ownerOf(_tokenId) == msg.sender, "Only owner can set signature");
+        tokenSignature[_tokenId] = _signature;
+    }
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        if(balance > 0){
+            Address.sendValue(payable(owner()), balance);
+        }
+    }
+
+    function mintRed( string memory yourName) public payable {
+        mintTo( Color.Red, yourName);
+    }
+    function mintBlue(string memory yourName) public payable {
+        mintTo(Color.Blue, yourName);
+    }
+    function mintGreen(string memory yourName) public payable {
+        mintTo(Color.Green, yourName);
+    }
+    function mintYellow(string memory yourName) public payable {
+        mintTo(Color.Yellow, yourName);
+    }
+    function mintWhite(string memory yourName) public payable {
+        mintTo(Color.White, yourName);
+    }
+    function mintPink(string memory yourName) public payable {
+        mintTo(Color.Pink, yourName);
+    }
+    function mintTo(Color _color,string memory _name) private {
+        address _to = msg.sender;
+        require(sw, "Minting window is not open");
+        require(currentTokenId < totalNumer, "Token amount is full)");
+        require(numOfMinted[_to] < limit, "You reached mint limit");
+        require(mintPrice <= msg.value, "Ether value sent is not correct");
+        uint256 newTokenId = _getNextTokenId();
+        _mint(_to, newTokenId);
+        
+        tokenSignature[newTokenId] = _name;
+        tokenColor[newTokenId] = _color;
+        numOfMinted[_to]++;
+        emit Mint(msg.sender, colorString[_color], _name);
+        _incrementTokenId();
     }
     function tokenURI(uint256 _tokenId) override public view returns (string memory) {
         require(isTokenExist(_tokenId), "tokenId must be exist");
@@ -148,7 +162,7 @@ contract NFTNewsCert is ERC721, Ownable{
         string memory svg = string(abi.encodePacked(p[0], p[1], p[2], p[3], p[4], p[5]));
         
         string memory meta = string(abi.encodePacked(
-            '{"name": "NFTNewsCertfication #',
+            '{"name": "NFTNewsCertification #',
             Strings.toString(_tokenId),
             '","description": "NFT News Reading Certification.",',
             '"attributes": [{"trait_type":"Color","value":"',
@@ -159,12 +173,5 @@ contract NFTNewsCert is ERC721, Ownable{
         string memory json = Base64.encode(bytes(string(abi.encodePacked(meta, Base64.encode(bytes(svg)), '"}'))));
         string memory output = string(abi.encodePacked('data:application/json;base64,', json));
         return output;
-    }
-    function setSwitch(bool _sw) onlyOwner() public {
-        sw = _sw;
-    }
-
-    function setLimit(uint256 _limit) onlyOwner() public {
-        limit = _limit;
     }
 }
