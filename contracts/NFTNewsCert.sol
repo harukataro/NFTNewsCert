@@ -38,17 +38,20 @@ contract NFTNewsCert is ERC721, Ownable{
     function xPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) % 10 * 24 + 12 + 30 + 10;
     }
-        function yPosition(uint256 _tokenId) private pure returns (uint256){
+    function yPosition(uint256 _tokenId) private pure returns (uint256){
         return (_tokenId- 1) / 10 * 24 + 12 + 60 + 10;
     }
 
-
-    function getUserMinted(address _address) public view returns (uint256) {
+    function getNumberofAccountMinted(address _address) public view returns (uint256) {
         return numOfMinted[_address];
     }
 
-    function getMinttedNftNumber() public view returns (uint256) {
+    function getNumberOfMinted() public view returns (uint256) {
         return currentTokenId ;
+    }
+
+    function getMintStatus() public view returns (bool) {
+        return sw;
     }
 
     function mintRed( string memory yourName) public{
@@ -79,7 +82,7 @@ contract NFTNewsCert is ERC721, Ownable{
         
         tokenSignature[newTokenId] = _name;
         tokenColor[newTokenId] = _color;        
-
+        numOfMinted[_to]++;
         emit Mint(msg.sender, colorString[_color], _name);
         _incrementTokenId();
     }

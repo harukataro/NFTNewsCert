@@ -161,6 +161,11 @@
   padding: 20px;
 }
 
+.alart-text {
+  font-size: 25px;
+  color: rgb(207, 23, 23);
+}
+
 .left{
   margin-right : auto
 }

@@ -74,10 +74,38 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("Mint can not with switch off state", async function () {
+      expect(await token721.getMintStatus()).to.equal(true);
       await token721.setSwitch(false);
+      expect(await token721.getMintStatus()).to.equal(false);
       await expect(
         token721.connect(a1).mintBlue("harajyuku")
         ).to.be.revertedWith("Minting window is not open");
     });
+
+    it("get Number of total mint", async function (){
+      expect(await token721.getNumberOfMinted()).to.equal(0);
+      await token721.connect(a1).mintBlue("harajyuku");
+      await token721.connect(a2).mintYellow("harajyuku");
+      await token721.connect(a3).mintPink("harajyuku");
+      expect(await token721.getNumberOfMinted()).to.equal(3);
+    });
+
+    it("get revert if mint request over limit", async function (){
+      await token721.connect(a1).mintBlue("harajyuku");
+      await expect(
+        token721.connect(a1).mintBlue("harajyuku")
+        ).to.be.revertedWith("You reached mint limit");
+    });
+
+    it("get revert if mint request over limit of total", async function (){
+      await token721.setLimit(100);
+      for(let i=0; i<100; i++){
+        await token721.connect(a1).mintBlue("harajyuku");
+      }
+      await expect(
+        token721.connect(a2).mintBlue("harajyuku")
+        ).to.be.revertedWith("Token amount is full");
+    });
+
   });
 });

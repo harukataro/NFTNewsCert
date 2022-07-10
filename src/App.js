@@ -11,7 +11,7 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const OPENSEA_LINK = 'https://testnets.opensea.io/collection/nftnewscert75';
 const TOTAL_MINT_COUNT = 100;
 
-const CONTRACT_ADDRESS = "0x93c01833a03e3ac5F4352254beD98f49467d2dE6";
+const CONTRACT_ADDRESS = "0x4A70F1D69793d21260e8738369f126D2b3CeAcB2";
 
 const App = () => {
   let totalMinted
@@ -21,6 +21,7 @@ const App = () => {
   const [currentNetwork, setCurrentNetwork] = useState("")
   const [color, setColor] = useState("red")
   const [text, setText] = useState("")
+  const [mintState, setMintState] = useState(false)
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -40,6 +41,7 @@ const App = () => {
       console.log("Found an authorized account:", account);
       setCurrentAccount(account)
       setupEventListener()
+      getNumberOfMinted()
     } else {
       console.log("No authorized account found")
     }
@@ -65,6 +67,19 @@ const App = () => {
     }
   }
 
+  const getNumberOfMinted = async () => {
+    console.log("now getting number of minted")
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer);
+    let count = await connectedContract.getNumberOfMinted();
+    console.log("count",count._hex.substring(3))
+    setMintTotal(count._hex.substring(3))
+    let state = await connectedContract.getMintStatus();
+    console.log("mintState",state);
+    setMintState(state)
+  }
+
   const setupEventListener = async () => {
     try {
       const { ethereum } = window;
@@ -88,6 +103,7 @@ const App = () => {
   }
 
   const askContractToMintNft = async () => {
+      if(!mintState) return;
       try {
         const { ethereum } = window;
 
@@ -167,25 +183,18 @@ const App = () => {
       <p className="sub-text">
       <input class="text-box" placeholder="input sign name" value={text} onChange={handleChange} type="text" />
       </p>
-      <button onClick={askContractToMintNft} className="cta-button mint-button">
-      Mint Now
-      </button>
+      {mintState?
+        (<button onClick={askContractToMintNft} className="cta-button mint-button">
+        Mint Now
+        </button>
+        ): (<p className="alart-text">Minting is closed</p>)
+      }
     </div>
   )
 
   const renderNetworkPrompt = () => (
     alert("Hello there, This app is built on the rinkeby testnet and it looks like you are on a different ethereum network. Please switch to the Rinkeby testnet to continue")
   )
-
-  const getNumberOfMinted = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer);
-    
-    let count = await connectedContract.getNumberOfMinted()
-    setMintTotal(count._hex.substring(3))
-    console.log(count._hex.substring(3))
-  }
 
   return (
     <div className="App">
@@ -200,9 +209,9 @@ const App = () => {
           <p className="sub-text">
             Get Reading Certification on Web3!
           </p>
-          {/* <p className="sub-text">
-            {mintTotal}/100 NFTs minted.
-          </p> */}
+          <p className="sub-text">
+            {mintTotal} of 100 NFTs minted.
+          </p>
           {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
           <p className="explain-text">
             あなたのオリジナルな購読証明を発行しよう<p/>色とサイン名を入力しMint<p/>フルオンチェーンNFT with YOU!
