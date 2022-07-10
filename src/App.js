@@ -8,10 +8,10 @@ import './App.css';
 
 const TWITTER_HANDLE = 'harukatarotaro';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = 'https://testnets.opensea.io/collection/nftnewscert75';
+const OPENSEA_LINK = 'https://opensea.io/collection/nftnewscert75';
 const TOTAL_MINT_COUNT = 100;
 
-const CONTRACT_ADDRESS = "0xA5781c2BD46AFBd0bc01FcdeAc8b059f89F126B8";
+const CONTRACT_ADDRESS = "0xBCF3a2D0Ec7F39a346490e7C30163ddf6De6a268";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("")
