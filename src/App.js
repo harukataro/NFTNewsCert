@@ -14,9 +14,10 @@ const TOTAL_MINT_COUNT = 100;
 const CONTRACT_ADDRESS = "0xBCF3a2D0Ec7F39a346490e7C30163ddf6De6a268";
 
 const App = () => {
+  let totalMinted
   const [currentAccount, setCurrentAccount] = useState("")
   const [miningAnimation, setMiningAnimation] = useState(false)
-  const [mintTotal, setMintTotal] = useState("-")
+  const [mintTotal, setMintTotal] = useState("totalMinted")
   const [currentNetwork, setCurrentNetwork] = useState("")
   const [color, setColor] = useState("red")
   const [text, setText] = useState("")
@@ -67,13 +68,13 @@ const App = () => {
   }
 
   const getNumberOfMinted = async () => {
-    console.log("now getting number of minted")
+    // console.log("now getting number of minted")
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer);
     let count = await connectedContract.getNumberOfMinted();
-    console.log("count",count._hex.substring(3))
-    setMintTotal(count._hex.substring(3))
+    console.log("NumberOfMinted", count.toString())
+    setMintTotal(count.toString())
     let state = await connectedContract.getMintStatus();
     console.log("mintState",state);
     setMintState(state)
@@ -88,9 +89,8 @@ const App = () => {
         const signer = provider.getSigner();
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer);
 
-        connectedContract.on("NewCertificationNFTMinted", (from, tokenId) => {
-          console.log(from, tokenId.toNumber())
-          alert(`minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`)
+        connectedContract.on("Mint", (from, color, signature) => {
+          console.log(from, color, signature)
         })
         console.log("Setup event listener!")
       } else {
@@ -192,7 +192,7 @@ const App = () => {
   )
 
   const renderNetworkPrompt = () => (
-    alert("Hello there, This app is built on the rinkeby testnet and it looks like you are on a different ethereum network. Please switch to the Rinkeby testnet to continue")
+    alert("This app is built on the rinkeby testnet and it looks like you are on a different ethereum network. Please switch to the Rinkeby testnet to continue")
   )
 
   return (
@@ -219,6 +219,10 @@ const App = () => {
             rel="noreferrer"
           >
             <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View on OpenSea</a>
+          <p className="explain-text">
+          mintまだやってるはずなのにclosedが出る時はリロードで治るかもしれない。突貫でつくって高級ではないのですいませんが人力お願いします。あと直コンもあり。下のリンクからEtherscanに飛べます
+          <br/><a href="https://etherscan.io/address/0xbcf3a2d0ec7f39a346490e7c30163ddf6de6a268#writeContract" target="_blank">直コンはここ</a>
+          </p>
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
