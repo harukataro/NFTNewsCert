@@ -18,7 +18,7 @@
 .header-container {
   padding-top: 30px;
   background: white;
-  min-height: 80vh;
+  min-height: 90vh;
   width: 60%;
   background: linear-gradient( to right bottom, rgba(0, 4, 231, 0.6), rgba(255, 255, 255, 0.2));
   border-radius: 2rem;
@@ -155,9 +155,11 @@
   color: #fff;
 }
 .explain-text {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
   font-size: 18px;
   color: #fff;
-  margin: 0 0 15px 0;
   padding: 20px;
 }
 

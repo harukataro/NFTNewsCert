@@ -206,8 +206,8 @@ const App = () => {
         <div className="header-container">
           <p className="header gradient-text">NFT News Reading Certification</p>
           <p className="explain-text">
-            100人の仲間と作るフルオンチェーンNFT。あなたの選択が全員のNFTのデザインを変える。あなたはどの宝石を選ぶのでしょう。<p/>色とサイン名を入力しMint<p/>
-          </p>
+            100人の仲間と作る宝石箱のフルオンチェーンNFT。あなたの選択がNFTのデザインを変える。あなたはどの宝石を選ぶ?</p>
+          <p className="explain-text">カラーとNFTに刻むサインを入力しMint Now</p>
           {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
           <p className="sub-text">
             {mintTotal} of 100 NFTs minted.
