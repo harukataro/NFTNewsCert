@@ -1119,7 +1119,6 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
 
 
 //main zone
-
 contract NFTNewsCert is ERC721, Ownable{
     uint256 private currentTokenId = 0;
     bool sw = false;
@@ -1131,7 +1130,6 @@ contract NFTNewsCert is ERC721, Ownable{
     mapping(Color => string) colorString;
 
     mapping(uint256 => Color) tokenColor;
-    mapping(uint256 => address) tokenOwner;
     mapping(uint256 => string) tokenSignature;
     mapping(address => uint256) numOfMinted;
 
@@ -1154,7 +1152,7 @@ contract NFTNewsCert is ERC721, Ownable{
         return (_tokenId- 1) / 10 * 24 + 12 + 60 + 10;
     }
 
-    function getNumberofAccountMinted(address _address) public view returns (uint256) {
+    function getNumberOfAccountMinted(address _address) public view returns (uint256) {
         return numOfMinted[_address];
     }
 
@@ -1164,6 +1162,15 @@ contract NFTNewsCert is ERC721, Ownable{
 
     function getMintStatus() public view returns (bool) {
         return sw;
+    }
+
+    function getSignature(uint256 _tokenId) public view returns (string memory) {
+        return tokenSignature[_tokenId];
+    }
+
+    function setSignature(uint256 _tokenId, string memory _signature) public {
+        require(ownerOf(_tokenId) == msg.sender, "Only owner can set signature");
+        tokenSignature[_tokenId] = _signature;
     }
 
     function mintRed( string memory yourName) public{
@@ -1193,7 +1200,7 @@ contract NFTNewsCert is ERC721, Ownable{
         _mint(_to, newTokenId);
         
         tokenSignature[newTokenId] = _name;
-        tokenColor[newTokenId] = _color;        
+        tokenColor[newTokenId] = _color;
         numOfMinted[_to]++;
         emit Mint(msg.sender, colorString[_color], _name);
         _incrementTokenId();

@@ -107,5 +107,12 @@ describe("NFTNewsCert contract", function () {
         ).to.be.revertedWith("Token amount is full");
     });
 
+    it("can update signature", async function (){
+      token721.connect(a1).mintBlue("1st name");
+      expect(await token721.connect(a1).getSignature(1)).to.equal("1st name");
+      await token721.connect(a1).setSignature(1, "2nd name");
+      expect(await token721.connect(a1).getSignature(1)).to.equal("2nd name");
+    });
+
   });
 });

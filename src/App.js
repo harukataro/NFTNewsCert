@@ -11,13 +11,12 @@ const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const OPENSEA_LINK = 'https://testnets.opensea.io/collection/nftnewscert75';
 const TOTAL_MINT_COUNT = 100;
 
-const CONTRACT_ADDRESS = "0x4A70F1D69793d21260e8738369f126D2b3CeAcB2";
+const CONTRACT_ADDRESS = "0xA5781c2BD46AFBd0bc01FcdeAc8b059f89F126B8";
 
 const App = () => {
-  let totalMinted
   const [currentAccount, setCurrentAccount] = useState("")
   const [miningAnimation, setMiningAnimation] = useState(false)
-  const [mintTotal, setMintTotal] = useState(totalMinted)
+  const [mintTotal, setMintTotal] = useState("-")
   const [currentNetwork, setCurrentNetwork] = useState("")
   const [color, setColor] = useState("red")
   const [text, setText] = useState("")
@@ -206,15 +205,12 @@ const App = () => {
       <div className="container">
         <div className="header-container">
           <p className="header gradient-text">NFT News Reading Certification</p>
-          <p className="sub-text">
-            Get Reading Certification on Web3!
-          </p>
-          <p className="sub-text">
-            {mintTotal} of 100 NFTs minted.
+          <p className="explain-text">
+            100人の仲間と作るフルオンチェーンNFT。あなたの選択が全員のNFTのデザインを変える。あなたはどの宝石を選ぶのでしょう。<p/>色とサイン名を入力しMint<p/>
           </p>
           {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
-          <p className="explain-text">
-            あなたのオリジナルな購読証明を発行しよう<p/>色とサイン名を入力しMint<p/>フルオンチェーンNFT with YOU!
+          <p className="sub-text">
+            {mintTotal} of 100 NFTs minted.
           </p>
           <a
             className="opensea-button"
