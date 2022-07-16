@@ -110,7 +110,7 @@ contract NFTNewsCert is ERC721, Ownable{
         require(numOfMinted[_to] < limit, "You reached mint limit");
         require(mintPrice <= msg.value, "Ether value sent is not correct");
         uint256 newTokenId = _getNextTokenId();
-        _mint(_to, newTokenId);
+        _safeMint(_to, newTokenId);
         
         tokenSignature[newTokenId] = _name;
         tokenColor[newTokenId] = _color;
