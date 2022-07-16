@@ -8,6 +8,7 @@ describe("NFTNewsCert contract", function () {
   let _name='NFTNewsCert74';
   let _symbol='NNC74';
   let a1, a2, a3,a4, a5, otherAccounts;
+  let MintPrice = "0.003";
 
   beforeEach(async function () {
   BadgeToken = await ethers.getContractFactory("NFTNewsCert");
@@ -26,21 +27,21 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("Should mint a token by account1", async function () {
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)};
       await token721.connect(a1).mintRed("shibuya", options);
       expect(await token721.ownerOf(1)).to.equal(a1.address);
       expect(await token721.balanceOf(a1.address)).to.equal(1);      
     });
 
     it("Should not mint with fewer pay", async function () {
-      const options = {value: ethers.utils.parseEther("0.004")}
+      const options = {value: ethers.utils.parseEther((MintPrice-0.001).toString())};
       await expect(
         token721.connect(a1).mintBlue("harajyuku",options)
         ).to.be.revertedWith("Ether value sent is not correct");     
     });
 
     it("Should output tokeURI", async function () {
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.mintRed("shibuya", options);
       await token721.connect(a1).mintBlue("harajyuku", options);
       await token721.connect(a2).mintYellow("harajyuku", options);
@@ -61,7 +62,7 @@ describe("NFTNewsCert contract", function () {
       fs.writeFileSync("test.svg", image);
     });
 
-    it("Should acccept upto number of max mint", async function () {
+    it("Should accept upto number of max mint", async function () {
       await token721.setLimit(100);
       for(let i=0; i<20; i++){
         const options = {value: ethers.utils.parseEther("0.050")}
@@ -91,7 +92,7 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("get Number of total mint", async function (){
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)}
       expect(await token721.getNumberOfMinted()).to.equal(0);
       await token721.connect(a1).mintBlue("harajyuku", options);
       await token721.connect(a2).mintYellow("harajyuku", options);
@@ -100,7 +101,7 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("get revert if mint request over limit", async function (){
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.connect(a1).mintBlue("harajyuku",options);
       await expect(
         token721.connect(a1).mintBlue("harajyuku",options)
@@ -108,7 +109,7 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("get revert if mint request over limit of total", async function (){
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.setLimit(100);
       for(let i=0; i<100; i++){
         await token721.connect(a1).mintBlue("harajyuku",options);
@@ -119,11 +120,20 @@ describe("NFTNewsCert contract", function () {
     });
 
     it("can update signature", async function (){
-      const options = {value: ethers.utils.parseEther("0.005")}
+      const options = {value: ethers.utils.parseEther(MintPrice)}
       token721.connect(a1).mintBlue("1st name",options);
       expect(await token721.connect(a1).getSignature(1)).to.equal("1st name");
       await token721.connect(a1).setSignature(1, "2nd name");
       expect(await token721.connect(a1).getSignature(1)).to.equal("2nd name");
+    });
+
+    it("exact value return automatic", async function (){
+      const prevBalance = await ethers.provider.getBalance(a1.address);
+      const options = {value: ethers.utils.parseEther(MintPrice)}
+      await token721.connect(a1).mintBlue("1st name",options);
+      const afterBalance = await ethers.provider.getBalance(a1.address);
+      console.log("delta", (prevBalance - afterBalance)/1e18);
+      expect((prevBalance - afterBalance)/1e18).lessThan(Number(MintPrice));
     });
 
   });

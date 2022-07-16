@@ -13,7 +13,7 @@ contract NFTNewsCert is ERC721, Ownable{
     bool sw = false;
     uint256 totalNumer = 100;
     uint256 limit = 1;
-    uint256 mintPrice = 0.005 ether;
+    uint256 mintPrice = 0.003 ether;
 
     enum Color {Black, Red, Blue, Green, Yellow, White, Pink}
     string[] colorArray;
@@ -47,7 +47,7 @@ contract NFTNewsCert is ERC721, Ownable{
     function _incrementTokenId() private {
         currentTokenId++;
     }
-        function isTokenExist(uint256 _tokenId) private view returns (bool) {
+    function isTokenExist(uint256 _tokenId) private view returns (bool) {
         if(_tokenId < 1 || currentTokenId < _tokenId){return false;}
         return tokenColor[_tokenId] != Color.Black;
     }
@@ -103,7 +103,7 @@ contract NFTNewsCert is ERC721, Ownable{
     function mintPink(string memory yourName) public payable {
         mintTo(Color.Pink, yourName);
     }
-    function mintTo(Color _color,string memory _name) private {
+    function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
         require(sw, "Minting window is not open");
         require(currentTokenId < totalNumer, "Token amount is full)");
@@ -115,6 +115,7 @@ contract NFTNewsCert is ERC721, Ownable{
         tokenSignature[newTokenId] = _name;
         tokenColor[newTokenId] = _color;
         numOfMinted[_to]++;
+        Address.sendValue(payable(msg.sender), mintPrice);
         emit Mint(msg.sender, colorString[_color], _name);
         _incrementTokenId();
     }
