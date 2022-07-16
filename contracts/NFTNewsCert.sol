@@ -30,13 +30,13 @@ contract NFTNewsCert is ERC721, Ownable{
         string memory _symbol
     ) ERC721(_name, _symbol) {
 
-        colorString[Color.Black] = "Black";
-        colorString[Color.Red] = "Red";
-        colorString[Color.Blue] = "Blue";
-        colorString[Color.Green] = "Green";
-        colorString[Color.Yellow] = "Yellow";
-        colorString[Color.White] = "White";
-        colorString[Color.Pink] = "Pink";
+        colorString[Color.Black] = "black";
+        colorString[Color.Red] = "red";
+        colorString[Color.Blue] = "blue";
+        colorString[Color.Green] = "green";
+        colorString[Color.Yellow] = "yellow";
+        colorString[Color.White] = "white";
+        colorString[Color.Pink] = "pink";
         colorArray = ["black","red", "blue", "green", "yellow", "white", "pink"];
     }
 
@@ -89,6 +89,14 @@ contract NFTNewsCert is ERC721, Ownable{
         if(balance > 0){
             Address.sendValue(payable(owner()), balance);
         }
+    }
+
+    function isMintableCombination(string memory _color, string memory _signature) public view returns (bool) {
+        bytes32 convination = keccak256(abi.encodePacked( _color, _signature));
+        return mintedParameterHash[convination] == false;
+    }
+    function isInLimit() public view returns (bool) {
+        return numOfMinted[msg.sender] < limit || msg.sender == owner();
     }
 
     function mintRed( string memory yourName) public payable {

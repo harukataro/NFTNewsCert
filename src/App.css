@@ -1,12 +1,12 @@
 .App {
-  height: 100vh;
+  height: 150vh;
   background-color: #0d1116;
   overflow: scroll;
   text-align: center;
 }
 
 .container {
-  height: 100vh;
+  height: 150vh;
   width: 100vw;
   background: linear-gradient(to left top, #0c47eb, #1c1c1b);
   display: flex;
@@ -34,8 +34,8 @@
 .circleL1, .circleL2, .circleL3, .circleR1, .circleR2, .circleR3 {
   background: white;
   background: linear-gradient(to right bottom, red, black);
-  height: 10rem;
-  width: 10rem;
+  height: 5rem;
+  width: 5rem;
   position: absolute;
   z-index: 3;
   border-radius: 50%;
@@ -48,35 +48,35 @@
 
 .circleL1 {
   background: linear-gradient(to right bottom, red, black);
-  top: 20%;
-  left: 10%;
+  top: 10%;
+  margin-right: 50%;
 }
 .circleL2 {
   background: linear-gradient(to right bottom, blue, black);
-  top: 40%;
-  left: 10%;
+  top: 10%;
+  margin-right: 30%;
 }
 .circleL3 {
   background: linear-gradient(to right bottom, yellow, black);
-  top: 60%;
-  left: 10%;
+  top: 10%;
+  margin-right: 10%;
 }
 
 .circleR1 {
   background: linear-gradient(to right bottom, white, black);
-  top: 20%;
-  right: 10%;
+  top: 10%;
+  margin-left: 10%;
 }
 
 .circleR2 {
   background: linear-gradient(to right bottom, pink, black);
-  top: 40%;
-  right: 10%;
+  top: 10%;
+  margin-left: 30%;
 }
 .circleR3 {
   background: linear-gradient(to right bottom, green, black);
-  top: 60%;
-  right: 10%;
+  top: 10%;
+  margin-left: 50%;
 }
 
 .wave {

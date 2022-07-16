@@ -16,10 +16,10 @@ const CONTRACT_ADDRESS = require("./utils/contractAddress.json").contractAddress
 const ethScanContractURL = 'https://etherscan.io/address/' + CONTRACT_ADDRESS + '#writeContract';
 
 const App = () => {
-  let totalMinted
+  let totalMinted = "?";
   const [currentAccount, setCurrentAccount] = useState("")
   const [miningAnimation, setMiningAnimation] = useState(false)
-  const [mintTotal, setMintTotal] = useState("totalMinted")
+  const [mintTotal, setMintTotal] = useState(totalMinted)
   const [currentNetwork, setCurrentNetwork] = useState("")
   const [color, setColor] = useState("red")
   const [text, setText] = useState("")
@@ -113,7 +113,18 @@ const App = () => {
           const signer = provider.getSigner()
           const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer)
 
-          // console.log("Going to pop wallet now to pay gas...")
+          //pre check
+          let isInLimit = await connectedContract.isInLimit()
+          if(!isInLimit) {
+            alert("You already minted upto limit")
+            return;
+          }
+          let isMintable = await connectedContract.isMintableCombination(color, text)
+          if(!isMintable) {
+            alert("This combination is already used! Change color or Signature")
+            return;
+          }
+
           let nftTxn;
           const options = {value: ethers.utils.parseEther("0.003")}
           if(color === "pink"){
@@ -210,7 +221,7 @@ const App = () => {
           <p className="header gradient-text">NFT News Reading Certification</p>
           <p className="explain-text">
             100人の仲間と作る宝石箱のフルオンチェーンNFT。あなたの選択がNFTのデザインを変える。あなたはどの宝石を選ぶ?</p>
-          <p className="explain-text">カラーとNFTに刻むサインを入力しMint Now</p>
+          <p className="explain-text">カラーとNFTに刻むサインを入力しMintしてください。0.003ETHはbot対策です。フラッシュ返金していますのでガス代のみかかります。</p>
           {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
           <p className="sub-text">
             {mintTotal} of 100 NFTs minted.

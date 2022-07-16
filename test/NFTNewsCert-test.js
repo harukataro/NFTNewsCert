@@ -30,14 +30,14 @@ describe("NFTNewsCert contract", function () {
       const options = {value: ethers.utils.parseEther(MintPrice)};
       await token721.connect(a1).mintRed("shibuya", options);
       expect(await token721.ownerOf(1)).to.equal(a1.address);
-      expect(await token721.balanceOf(a1.address)).to.equal(1);      
+      expect((await token721.balanceOf(a1.address)).toNumber()).to.equal(1);      
     });
 
     it("Should not mint with fewer pay", async function () {
       const options = {value: ethers.utils.parseEther((MintPrice-0.001).toString())};
       await expect(
         token721.connect(a1).mintBlue("harajyuku",options)
-        ).to.be.revertedWith("Ether value sent is not correct");     
+        ).to.be.revertedWith("Ether value is not correct");     
     });
 
     it("Should output tokeURI", async function () {
@@ -65,12 +65,12 @@ describe("NFTNewsCert contract", function () {
     it("Should accept upto number of max mint", async function () {
       await token721.setLimit(100);
       for(let i=0; i<20; i++){
-        const options = {value: ethers.utils.parseEther("0.050")}
-        await token721.connect(a1).mintBlue("harajyuku", options);
-        await token721.connect(a2).mintYellow("harajyuku", options);
-        await token721.connect(a3).mintPink("harajyuku", options);
-        await token721.connect(a4).mintWhite("harajyuku", options);
-        await token721.connect(a5).mintGreen("harajyuku", options);
+        const options = {value: ethers.utils.parseEther("0.003")}
+        await token721.connect(a1).mintBlue("harajyuku1" + i, options);
+        await token721.connect(a2).mintYellow("harajyuku2" + i, options);
+        await token721.connect(a3).mintPink("harajyuku3" + i, options);
+        await token721.connect(a4).mintWhite("harajyuku4" + i, options);
+        await token721.connect(a5).mintGreen("harajyuku5" + i, options);
       }
       let tokenURI = await token721.tokenURI(50);
       let metaData = Buffer.from(tokenURI.split(",")[1], 'base64').toString('ascii');
@@ -104,7 +104,7 @@ describe("NFTNewsCert contract", function () {
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.connect(a1).mintBlue("harajyuku",options);
       await expect(
-        token721.connect(a1).mintBlue("harajyuku",options)
+        token721.connect(a1).mintBlue("harajyuku2",options)
         ).to.be.revertedWith("You reached mint limit");
     });
 
@@ -112,10 +112,10 @@ describe("NFTNewsCert contract", function () {
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.setLimit(100);
       for(let i=0; i<100; i++){
-        await token721.connect(a1).mintBlue("harajyuku",options);
+        await token721.connect(a1).mintBlue("harajyuku" + i,options);
       }
       await expect(
-        token721.connect(a2).mintBlue("harajyuku",options)
+        token721.connect(a2).mintBlue("harajyuku100",options)
         ).to.be.revertedWith("Token amount is full");
     });
 
@@ -147,8 +147,21 @@ describe("NFTNewsCert contract", function () {
       await token721.setMintStatus(false);
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.mintBlue("owner", options);
-      await token721.mintBlue("owner", options);
-      await token721.mintBlue("owner", options);
+      await token721.mintBlue("owner1", options);
+      await token721.mintBlue("owner2", options);
     });
+
+    it("Shoult turn false if already exist pair", async function (){
+        const options = {value: ethers.utils.parseEther(MintPrice)}
+        await token721.mintBlue("owner", options);
+    });
+
+    it("Should return false isMintableCombination() with used pair of parameter", async function (){
+      const options = {value: ethers.utils.parseEther(MintPrice)}
+      await token721.mintBlue("owner", options);
+      expect(await token721.isMintableCombination("blue","owner")).to.equal(false);
+      expect(await token721.isMintableCombination("blue","user")).to.equal(true);
+    });
+
   });
 });
