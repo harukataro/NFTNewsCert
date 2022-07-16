@@ -1,0 +1,1 @@
+module.exports = ['NFTNewsCert76','NNC76'];

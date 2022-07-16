@@ -82,7 +82,7 @@ describe("NFTNewsCert contract", function () {
       fs.writeFileSync("test2.svg", image);
     });
 
-    it("Mint can not with switch off state", async function () {
+    it("Should not Mint on switch off state", async function () {
       expect(await token721.getMintStatus()).to.equal(true);
       await token721.setMintStatus(false);
       expect(await token721.getMintStatus()).to.equal(false);
@@ -91,7 +91,7 @@ describe("NFTNewsCert contract", function () {
         ).to.be.revertedWith("Minting window is not open");
     });
 
-    it("get Number of total mint", async function (){
+    it("Should return Number of total mint", async function (){
       const options = {value: ethers.utils.parseEther(MintPrice)}
       expect(await token721.getNumberOfMinted()).to.equal(0);
       await token721.connect(a1).mintBlue("harajyuku", options);
@@ -100,7 +100,7 @@ describe("NFTNewsCert contract", function () {
       expect(await token721.getNumberOfMinted()).to.equal(3);
     });
 
-    it("get revert if mint request over limit", async function (){
+    it("Should revert if mint request over limit", async function (){
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.connect(a1).mintBlue("harajyuku",options);
       await expect(
@@ -108,7 +108,7 @@ describe("NFTNewsCert contract", function () {
         ).to.be.revertedWith("You reached mint limit");
     });
 
-    it("get revert if mint request over limit of total", async function (){
+    it("Should revert if mint request over limit of total", async function (){
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.setLimit(100);
       for(let i=0; i<100; i++){
@@ -119,7 +119,7 @@ describe("NFTNewsCert contract", function () {
         ).to.be.revertedWith("Token amount is full");
     });
 
-    it("can update signature", async function (){
+    it("Should user update signature", async function (){
       const options = {value: ethers.utils.parseEther(MintPrice)}
       token721.connect(a1).mintBlue("1st name",options);
       expect(await token721.connect(a1).getSignature(1)).to.equal("1st name");
@@ -127,7 +127,7 @@ describe("NFTNewsCert contract", function () {
       expect(await token721.connect(a1).getSignature(1)).to.equal("2nd name");
     });
 
-    it("exact value return automatic", async function (){
+    it("Should priceValue eth return when mint", async function (){
       const prevBalance = await ethers.provider.getBalance(a1.address);
       const options = {value: ethers.utils.parseEther(MintPrice)}
       await token721.connect(a1).mintBlue("1st name",options);
@@ -136,5 +136,19 @@ describe("NFTNewsCert contract", function () {
       expect((prevBalance - afterBalance)/1e18).lessThan(Number(MintPrice));
     });
 
+    it("Should owner mint with no limitation", async function (){
+      const options = {value: ethers.utils.parseEther(MintPrice)}
+      for(let i=0; i< 50; i++){
+        await token721.mintBlue("number"+ i, options);
+      }
+    });
+
+    it("Should owner mint with sw off state", async function (){
+      await token721.setMintStatus(false);
+      const options = {value: ethers.utils.parseEther(MintPrice)}
+      await token721.mintBlue("owner", options);
+      await token721.mintBlue("owner", options);
+      await token721.mintBlue("owner", options);
+    });
   });
 });

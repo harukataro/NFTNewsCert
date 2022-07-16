@@ -8,10 +8,12 @@ import './App.css';
 
 const TWITTER_HANDLE = 'harukatarotaro';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = 'https://opensea.io/collection/nftnewscert75';
+const OPENSEA_LINK = 'https://opensea.io/collection/nftnewscert76';
 const TOTAL_MINT_COUNT = 100;
 
-const CONTRACT_ADDRESS = "0xBCF3a2D0Ec7F39a346490e7C30163ddf6De6a268";
+//const CONTRACT_ADDRESS = "0xBCF3a2D0Ec7F39a346490e7C30163ddf6De6a268";
+const CONTRACT_ADDRESS = require("./utils/contractAddress.json").contractAddress;
+const ethScanContractURL = 'https://etherscan.io/address/' + CONTRACT_ADDRESS + '#writeContract';
 
 const App = () => {
   let totalMinted
@@ -31,7 +33,7 @@ const App = () => {
       return;
     } else {
       console.log("We have the ethereum object", ethereum);
-      console.log(window.ethereum.networkVersion, 'window.ethereum.networkVersion');
+      console.log('window.ethereum.networkVersion', await ethereum.request({ method: 'net_version' }));
     }
     
     const accounts = await ethereum.request({ method: 'eth_accounts' });
@@ -90,7 +92,7 @@ const App = () => {
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myNft.abi, signer);
 
         connectedContract.on("Mint", (from, color, signature) => {
-          console.log(from, color, signature)
+          //console.log(from, color, signature)
         })
         console.log("Setup event listener!")
       } else {
@@ -113,29 +115,30 @@ const App = () => {
 
           // console.log("Going to pop wallet now to pay gas...")
           let nftTxn;
+          const options = {value: ethers.utils.parseEther("0.003")}
           if(color === "pink"){
-            nftTxn = await connectedContract.mintPink(text)
+            nftTxn = await connectedContract.mintPink(text, options)
           }
           else if(color === "blue"){
-            nftTxn = await connectedContract.mintBlue(text)
+            nftTxn = await connectedContract.mintBlue(text, options)
           }
           else if(color === "red"){
-            nftTxn = await connectedContract.mintRed(text)
+            nftTxn = await connectedContract.mintRed(text, options)
           }
           else if(color === "green"){
-            nftTxn = await connectedContract.mintGreen(text)
+            nftTxn = await connectedContract.mintGreen(text, options)
           }
           else if(color === "yellow"){
-            nftTxn = await connectedContract.mintYellow(text)
+            nftTxn = await connectedContract.mintYellow(text, options)
           }
           else if(color === "white"){
-            nftTxn = await connectedContract.mintWhite(text)
+            nftTxn = await connectedContract.mintWhite(text, options)
           }
           console.log("Mining... please wait")
           setMiningAnimation(true);
           await nftTxn.wait()
           console.log(nftTxn)
-          console.log(`Mined, tee transaction: https://rinkeby.etherscan.io/tx/${nftTxn.hash}`)
+          console.log(`Mined, tee transaction: https://etherscan.io/tx/${nftTxn.hash}`)
           setMiningAnimation(false)
         } else {
           console.log("Ethereum object doesn't exist")
@@ -167,7 +170,7 @@ const App = () => {
   const renderMintUI = () => (
     <div>
       <p className="sub-text">  
-      <select class="select-box"
+      <select className="select-box"
           placeholder="select color"
           value={color}
           onChange={ (e) => handleChangeSelect(e)}>
@@ -180,7 +183,7 @@ const App = () => {
       </select>
       </p>
       <p className="sub-text">
-      <input class="text-box" placeholder="input sign name" value={text} onChange={handleChange} type="text" />
+      <input className="text-box" placeholder="input sign name" value={text} onChange={handleChange} type="text" />
       </p>
       {mintState?
         (<button onClick={askContractToMintNft} className="cta-button mint-button">
@@ -221,7 +224,7 @@ const App = () => {
             <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View on OpenSea</a>
           <p className="explain-text">
           mintまだやってるはずなのにclosedが出る時はリロードで治るかもしれない。突貫でつくって高級ではないのですいませんが人力お願いします。あと直コンもあり。下のリンクからEtherscanに飛べます
-          <br/><a href="https://etherscan.io/address/0xbcf3a2d0ec7f39a346490e7c30163ddf6de6a268#writeContract" target="_blank">直コンはここ</a>
+          <br/><a href={ethScanContractURL} target="_blank">直コンはここ</a>
           </p>
         </div>
         <div className="footer-container">

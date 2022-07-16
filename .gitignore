@@ -9,3 +9,7 @@ nfts-react
 cache
 artifacts
 .vscode
+src/utils/contractAddress.json
+src/utils/NFTNewsCert.json
+scripts/contractAddress.json
+.DS_Store

@@ -22,16 +22,22 @@ contract NFTNewsCert is ERC721, Ownable{
     mapping(uint256 => Color) tokenColor;
     mapping(uint256 => string) tokenSignature;
     mapping(address => uint256) numOfMinted;
+    mapping(bytes32 => bool) mintedParameterHash;
 
     event Mint(address indexed minter, string indexed color,string signature);
     constructor(
         string memory _name,
         string memory _symbol
     ) ERC721(_name, _symbol) {
+
+        colorString[Color.Black] = "Black";
+        colorString[Color.Red] = "Red";
+        colorString[Color.Blue] = "Blue";
+        colorString[Color.Green] = "Green";
+        colorString[Color.Yellow] = "Yellow";
+        colorString[Color.White] = "White";
+        colorString[Color.Pink] = "Pink";
         colorArray = ["black","red", "blue", "green", "yellow", "white", "pink"];
-        for(uint256 i=0; i<colorArray.length; i++){
-            colorString[Color(i)] = colorArray[i];
-        }
     }
 
     // internal functions
@@ -105,18 +111,21 @@ contract NFTNewsCert is ERC721, Ownable{
     }
     function mintTo(Color _color,string memory _name) private{
         address _to = msg.sender;
-        require(sw, "Minting window is not open");
+        bytes32 convination = keccak256(abi.encodePacked( colorString[_color], _name));
+        require(sw || msg.sender == owner(), "Minting window is not open");
         require(currentTokenId < totalNumer, "Token amount is full)");
-        require(numOfMinted[_to] < limit, "You reached mint limit");
-        require(mintPrice <= msg.value, "Ether value sent is not correct");
+        require(numOfMinted[_to] < limit || msg.sender == owner(), "You reached mint limit");
+        require(mintPrice <= msg.value, "Ether value is not correct");
+        require(mintedParameterHash[convination] == false, "unacceptable");
         uint256 newTokenId = _getNextTokenId();
         _safeMint(_to, newTokenId);
         
         tokenSignature[newTokenId] = _name;
         tokenColor[newTokenId] = _color;
         numOfMinted[_to]++;
+        mintedParameterHash[convination] = true;
         Address.sendValue(payable(msg.sender), mintPrice);
-        emit Mint(msg.sender, colorString[_color], _name);
+        emit Mint(_to, colorString[_color], _name);
         _incrementTokenId();
     }
     function tokenURI(uint256 _tokenId) override public view returns (string memory) {
@@ -142,7 +151,10 @@ contract NFTNewsCert is ERC721, Ownable{
         
         string memory xo = Strings.toString(xPosition(_tokenId));
         string memory yo = Strings.toString((yPosition(_tokenId)));
-        p[3] = string(abi.encodePacked('<circle id="F" cx="', xo, '" cy="', yo, '" r="20" fill="#aaa" filter="url(#f)"/>'));
+        p[3] = string(abi.encodePacked(
+            '<circle id="F" cx="', xo, '" cy="', yo, '" r="21" fill="#ddd" filter="url(#f)"/>',
+            '<circle id="F" cx="', xo, '" cy="', yo, '" r="14" fill="#aaa" filter="url(#f)"/>'
+        ));
 
         for(uint256 i = 1; i <= 100; i++){
             if(tokenColor[i] == Color.Black){continue;}
@@ -153,7 +165,7 @@ contract NFTNewsCert is ERC721, Ownable{
         }
 
         p[5] = string(abi.encodePacked(
-            '<text x="30" y="25" class="base">NFT News Certification #75</text>',
+            '<text x="30" y="25" class="base">NFT News Certification #76</text>',
             '<text x="30" y="45" class="base">ID: ',
             Strings.toString(_tokenId),
             '</text><text x="30" y="65" class="base"> Minter: ',
