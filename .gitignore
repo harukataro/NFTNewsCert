@@ -1,15 +1,13 @@
 node_modules
 .env
-coverage
-coverage.json
-typechain
-nfts-react
+.vscode
+.DS_Store
 
 #Hardhat files
 cache
 artifacts
-.vscode
-src/utils/contractAddress.json
-src/utils/NFTNewsCert.json
+
+#project specific
+src/utils/*.json
 scripts/contractAddress.json
-.DS_Store
+

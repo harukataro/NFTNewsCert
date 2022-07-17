@@ -7,12 +7,12 @@ describe("NFTNewsCert contract", function () {
   let token721;
   let _name='NFTNewsCert74';
   let _symbol='NNC74';
-  let a1, a2, a3,a4, a5, otherAccounts;
+  let a1, a2, a3,a4, a5;
   let MintPrice = "0.003";
 
   beforeEach(async function () {
   BadgeToken = await ethers.getContractFactory("NFTNewsCert");
-  [owner, a1, a2, a3, a4, a5, ...otherAccounts] = await ethers.getSigners();
+  [owner, a1, a2, a3, a4, a5] = await ethers.getSigners();
 
   token721 = await BadgeToken.deploy(_name,_symbol);
   await token721.setMintStatus(true);
@@ -151,7 +151,7 @@ describe("NFTNewsCert contract", function () {
       await token721.mintBlue("owner2", options);
     });
 
-    it("Shoult turn false if already exist pair", async function (){
+    it("Should turn false if already exist pair", async function (){
         const options = {value: ethers.utils.parseEther(MintPrice)}
         await token721.mintBlue("owner", options);
     });
