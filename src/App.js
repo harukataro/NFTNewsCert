@@ -161,7 +161,7 @@ const App = () => {
   useEffect(() => {
     checkIfWalletIsConnected()
     getNumberOfMinted()
-  }, [])
+  })
 
   const handleChange = (e) => {
     setText(() => e.target.value)
