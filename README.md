@@ -17,15 +17,17 @@ ACCOUNT_PRIVATE_KEY=<YOUR_KEY>
 ETHERSCAN_API_KEY=<YOUR_KEY>
 ```
 
-## testing commands
+## testing
 
-### hardhat test execution
+### hardhat test
 
 ```zsh
 yarn hardhat test
 ```
 
-### local deploy and check through frontend
+### deploy to local
+
+check with react debug mode
 
 ```zsh
 yarn hardhat node
@@ -34,7 +36,7 @@ yarn hardhat run scripts/StateChange.js --network localhost
 yarn run start
 ```
 
-### rinkeby deploy
+### deploy to rinkeby
 
 check through github page deployed frontend
 
@@ -54,15 +56,12 @@ connect with deployed wallet with Etherscan then execute setMintStatus with true
 
 (you need setup github pages. YourRepo -> Setting -> pages: Source main: /doc)
 
-**try mint with your rinkeby wallet.**
+try mint with your rinkeby wallet.
 
-check opensea testnet. When mint nft, create your collection page automatically.below
- are example.
- <https://testnets.opensea.io/collection/nftnewscert76>
+**check opensea testnet.**
+When mint nft, opensea create your collection page automatically. like this. you change url last part. <https://testnets.opensea.io/collection/nftnewscert76>
 
- for testing if you deploy same name collection multiple, opensea add extension automatically.
- this case, check there
- <https://testnets.opensea.io/collection/nftnewscert76-v2>
+ for testing if you deploy same name collection multiple, opensea add "-v" extension automatically. <https://testnets.opensea.io/collection/nftnewscert76-v2>
 
 ## deploy to mainnet
 
