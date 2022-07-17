@@ -7,6 +7,12 @@ full onchain nft contract and frontend on Github pages. you can reuse this.
 
 ''' yarn install '''
 
+prepair  .env file for deployment
+''' 
+ALCHEMY_KEY=<your key>
+ACCOUNT_PRIVATE_KEY=<your key>
+ETHERSCAN_API_KEY=<your key>
+
 ## testing commands
 
 ### hardhat test execution
