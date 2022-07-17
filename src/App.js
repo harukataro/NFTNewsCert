@@ -9,7 +9,7 @@ import './App.css';
 const TWITTER_HANDLE = 'harukatarotaro';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const OPENSEA_LINK = 'https://opensea.io/collection/nftnewscert76';
-const TOTAL_MINT_COUNT = 100;
+// const TOTAL_MINT_COUNT = 100;
 
 //const CONTRACT_ADDRESS = "0xBCF3a2D0Ec7F39a346490e7C30163ddf6De6a268";
 const CONTRACT_ADDRESS = require("./utils/contractAddress.json").contractAddress;
@@ -20,7 +20,6 @@ const App = () => {
   const [currentAccount, setCurrentAccount] = useState("")
   const [miningAnimation, setMiningAnimation] = useState(false)
   const [mintTotal, setMintTotal] = useState(totalMinted)
-  const [currentNetwork, setCurrentNetwork] = useState("")
   const [color, setColor] = useState("red")
   const [text, setText] = useState("")
   const [mintState, setMintState] = useState(false)
@@ -200,13 +199,9 @@ const App = () => {
         (<button onClick={askContractToMintNft} className="cta-button mint-button">
         Mint Now
         </button>
-        ): (<p className="alart-text">Minting is closed</p>)
+        ): (<p className="alert-text">Minting is closed</p>)
       }
     </div>
-  )
-
-  const renderNetworkPrompt = () => (
-    alert("This app is built on the rinkeby testnet and it looks like you are on a different ethereum network. Please switch to the Rinkeby testnet to continue")
   )
 
   return (
@@ -235,7 +230,7 @@ const App = () => {
             <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View on OpenSea</a>
           <p className="explain-text">
           mintまだやってるはずなのにclosedが出る時はリロードで治るかもしれない。突貫でつくって高級ではないのですいませんが人力お願いします。あと直コンもあり。下のリンクからEtherscanに飛べます
-          <br/><a href={ethScanContractURL} target="_blank">直コンはここ</a>
+          <br/><a href={ethScanContractURL} target="_blank" rel="noreferrer">直コンはここ</a>
           </p>
         </div>
         <div className="footer-container">
