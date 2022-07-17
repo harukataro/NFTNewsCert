@@ -10,4 +10,4 @@ artifacts
 #project specific
 src/utils/*.json
 scripts/contractAddress.json
-
+nfts-react
