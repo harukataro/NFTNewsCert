@@ -217,9 +217,11 @@ const App = () => {
           <p className="explain-text">
             100人の仲間と作る宝石箱のフルオンチェーンNFT。あなたの選択がNFTのデザインを変える。あなたはどの宝石を選ぶ?</p>
           <p className="explain-text">カラーとNFTに刻むサインを入力しMintしてください。0.003ETHはbot対策です。フラッシュ返金していますのでガス代のみかかります。</p>
-          {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()}
+          {/* {currentAccount === "" ?renderNotConnectedContainer() :renderMintUI()} */}
+          <p className="alert-text">Minting is closed</p>
           <p className="sub-text">
-            {mintTotal} of 100 NFTs minted.
+            {/* {mintTotal} of 100 NFTs minted. */}
+            100 of 100 NFTs minted.
           </p>
           <a
             className="opensea-button"
